@@ -1,0 +1,13 @@
+<ol>
+  <% @day_cocktail.errors.full_messages.each do |message| %>
+  <li><%= message %></li>
+  <% end %>
+</ol>
+
+<%= form_for @day_cocktail do |f| %>
+<%= f.collection_select :cocktail_id, Cocktail.all, :id, :name %>
+<%= f.collection_select :day_id, Day.all, :id, :name %>
+<%# <%= f.label :price %> 
+<%# <%= f.text_field :price %>
+<%= f.submit %>
+<% end %>

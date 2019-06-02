@@ -1,0 +1,17 @@
+<h1>All Daily Cocktails</h1>
+
+<ul>
+  <% @days.each do |d| %>
+    <li>Day: <%= d.name %></li>
+    <ul>
+    <% @day_cocktails.select {|c| c.day == d}.each do |drink| %>
+
+      <li>Drink: <%= drink.cocktail.name %></li>
+      <li>Price: <%= drink.cocktail.price %></li>
+      <br>
+    <% end  %>
+    </ul>
+  <% end %>
+</ul>
+
+<p><%= link_to "Create new daily cocktail", new_day_cocktail_path %>
