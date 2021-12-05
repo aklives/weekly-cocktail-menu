@@ -36,3 +36,5 @@ Day.create ([
 {name: "Saturday"}
 
 ])
+
+DayCocktail.create([{day_id: 1, cocktail_id: 1}, {day_id: 2, cocktail_id: 2}, {day_id: 3, cocktail_id: 3}, {day_id: 4, cocktail_id: 4}, {day_id: 5, cocktail_id: 5}, {day_id: 6, cocktail_id: 6}, {day_id: 7, cocktail_id: 7}])

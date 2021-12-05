@@ -3,7 +3,7 @@ let new_cocktail = true
 const divFooter = document.querySelector('.footer')
 
 function loadFooter(){
-  divFooter.innerHTML = ""
+  // divFooter.innerHTML = ""
   const reloadDiv = document.createElement('div')
   const p = document.createElement('p')
   reloadDiv.className = "reload-week-div"
@@ -12,6 +12,7 @@ function loadFooter(){
   p.addEventListener("click", loadDays)
   reloadDiv.appendChild(p)
   divFooter.appendChild(reloadDiv)
+
 }
 
 
@@ -22,6 +23,7 @@ function loadDays(){
   fetch('http://localhost:3000/days')
   .then(res => res.json())
   .then(days => days.forEach(addDayToDom))
+
 }
 
 function getCocktail(dc){
@@ -47,7 +49,7 @@ function deleteDrink(cocktail, dc){
 }
 
 function addCocktailForDay(cocktail, dc){
-  loadFooter()
+
   const mainDiv = document.querySelector('.days-cocktails')
   const cocktailDiv = document.createElement('div')
   cocktailDiv.className = `cocktail-${cocktail.id}-info`
@@ -74,6 +76,7 @@ function addCocktailForDay(cocktail, dc){
   cocktailDiv.appendChild(deleteButton)
   mainDiv.appendChild(cocktailDiv)
 
+
 }
 
 function createDC(event){
@@ -89,33 +92,23 @@ function createDC(event){
     body: JSON.stringify({ day_id: day_id, cocktail_id: cocktail_id})
   })
   .then(res => res.json())
-  .then(dc => {
-    addDayCocktailToDiv(dc)
-    drinkForm = document.querySelector('.drink-form')
-    const selectDiv = document.querySelector('#select-div')
-    divFooter.removeChild(selectDiv)
-    const p_select = document.createElement('p')
-    p_select.innerText = "add cocktail to day"
-    p_select.className = "p-add-cocktail"
-    p_select.dataset.day_id = dc.day_id
-    p_select.addEventListener("click", addCocktailToDay)
-    divFooter.appendChild(p_select)
-    })
-  }
+  .then(dc => addDayCocktailToDiv(dc))
+}
 
 
-function addCocktailToDay(event){
+function addCocktailToDay(dayId){
 
-  const p_add_cocktail = event.target
-  divFooter.removeChild(p_add_cocktail)
-  const selectDiv = document.createElement('div')
-  selectDiv.id = 'select-div'
-  selectDiv.className = 'input-field col s12'
+  const divSelect = document.createElement('div')
+  divSelect.id = 'select-div'
+  divSelect.className = 'select-div'
+
+  // divFooter.removeChild(divSelect)
+  // divFooter.removeChild(p_add_cocktail)
   const select = document.createElement('select')
   select.id = "select-drink"
   select.className = 'browser-default'
   select.innerHTML = `
-    <option value = "" disabled selected>Choose your Cocktail</option>
+    <option value = "" disabled selected>Add a Cocktail To The Day</option>
     <option value = "1">Screwdriver</option>
     <option value = "2">Vodka Cran</option>
     <option value = "3">Rum & Coke</option>
@@ -128,14 +121,14 @@ function addCocktailToDay(event){
     <option value = "10">Manhattan</option>
   `
   button = document.createElement('button')
-  button.innerText = "Submit"
-  button.dataset.day_id = parseInt(event.target.dataset.day_id)
+  button.innerText = "Add Drink"
+  button.dataset.day_id = parseInt(dayId)
   button.addEventListener("click", createDC)
-  selectDiv.appendChild(select)
-  selectDiv.appendChild(button)
-  divFooter.appendChild(selectDiv)
-
-
+  divSelect.appendChild(select)
+  divSelect.appendChild(button)
+  divFooter.innerHTML = ""
+  divFooter.appendChild(divSelect)
+  loadFooter()
 }
 
 // document.addEventListener('DOMContentLoaded', function() {
@@ -146,21 +139,17 @@ function addCocktailToDay(event){
 
 function addDayCocktailToDiv(dc){
   if (new_cocktail){
-    const newDiv = document.createElement("div")
     const p = document.getElementById(`day-${dc.day_id}`)
-    newDiv.className = "days-cocktails"
     const dayName = p.dataset.name
-    const p_select = document.createElement('p')
-    p_select.innerText = "add cocktail to day"
-    p_select.className = "p-add-cocktail"
-    p_select.dataset.day_id = dc.day_id
-    p_select.addEventListener("click", addCocktailToDay)
-    divFooter.appendChild(p_select)
+    const dayId = p.dataset.id
+    const dayCocktailDiv = document.createElement("div")
+    dayCocktailDiv.className = "days-cocktails"
+    addCocktailToDay(dayId)
     divContainer.innerHTML = ""
-    newDiv.innerHTML = `
+    dayCocktailDiv.innerHTML = `
       <h2 class="day-name">${dayName}</h2>
     `
-    divContainer.appendChild(newDiv)
+    divContainer.appendChild(dayCocktailDiv)
     getCocktail(dc)
   }
   else {
@@ -178,6 +167,7 @@ function loadDayCocktails(event){
   .then(res => res.json())
   .then(dcs => dcs.filter(dcs => dcs.day_id == event.target.dataset.id))
   .then(dcs => dcs.forEach(addDayCocktailToDiv))
+  loadFooter()
 }
 
 // function createForm(form, dayId){
@@ -221,19 +211,19 @@ function loadDayCocktails(event){
 
 //populates a list of clickable days
 function addDayToDom(day){
-  const newDiv = document.createElement('div')
-  newDiv.className = `day-div-${day.id}`
-  const p = document.createElement('p')
+  const dayDiv = document.createElement('div')
+  dayDiv.className = `day-div-${day.id}`
+  const p = document.createElement('h4')
   p.className = "day-p"
   p.id = `day-${day.id}`
   p.dataset.name = day.name
   p.dataset.id = day.id
   p.innerHTML = day.name
   p.addEventListener("click", loadDayCocktails)
-  newDiv.appendChild(p)
+  dayDiv.appendChild(p)
 
-  divContainer.appendChild(newDiv)
+  divContainer.appendChild(dayDiv)
 
 }
 
-loadDays()
+loadDays();
